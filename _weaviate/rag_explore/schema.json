@@ -1,0 +1,25 @@
+{
+    "classes": [
+        {
+            "class": "Document",
+            "vectorizer": "text2vec-openai",
+            "description": "A document class to store documents used for knowledge base",
+            "properties": [
+                {
+                    "name": "title",
+                    "dataType": [
+                        "string"
+                    ],
+                    "description": "The title of the document"
+                },
+                {
+                    "name": "content",
+                    "dataType": [
+                        "text"
+                    ],
+                    "description": "The entire content of the document"
+                }
+            ]
+        }
+    ]
+}
