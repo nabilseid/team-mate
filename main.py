@@ -3,6 +3,7 @@ import socketio
 from fastapi import FastAPI
 from typing import Dict, List
 from weaviate import setup_weaviate_interface
+from weaviate.chat import generic_chat_completions
 
 # Fast API application
 app = FastAPI()
@@ -16,7 +17,7 @@ app.mount("/", socket_app)
 sessions: Dict[str, List[Dict[str, str]]] = {}
 
 # Weaviate Interface
-weaviate_interface = setup_weaviate_interface()
+# weaviate_interface = setup_weaviate_interface()
 
 
 # Print {"Hello":"World"} on localhost:7777
@@ -58,6 +59,7 @@ async def handle_chat_message(sid, data):
     if session_id:
         if session_id not in sessions:
             raise Exception(f"Session {session_id} not found")
+
         received_message = {
             "id": data.get("id"),
             "message": data.get("message"),
@@ -65,9 +67,14 @@ async def handle_chat_message(sid, data):
             "timestamp": data.get("timestamp"),
         }
         sessions[session_id].append(received_message)
+
+        print(data.get("message"))
+        chat_response  = generic_chat_completions(data.get("message"))
+        print('chat_response', chat_response)
+
         response_message = {
             "id": data.get("id") + "_response",
-            "textResponse": data.get("message"),
+            "textResponse": chat_response,
             "isUserMessage": False,
             "timestamp": data.get("timestamp"),
             "isComplete": True,
