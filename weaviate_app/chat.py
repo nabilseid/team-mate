@@ -39,7 +39,7 @@ def llm_with_knowledge_base(query, retrieved_documents, history):
         ],
         {
             "role": "user",
-            "content": f"Question: {query}.\n Information: {information}"
+            "content": f"Question: {query}. \nInformation: {information}"
         }
     ]
     
@@ -67,18 +67,25 @@ def llm_with_out_knowledge_base(query, history):
     
     return completion(messages)
 
-def llm_check_query_related_with_job_search(query):
+def llm_check_query_related_with_job_search(query, history ):
 
     messages = [
-        {
+        { 
             "role": "system",
-            "content": ("You are an assistant to identify whether the provided question is related to open job position or not. "
-                        "You will be shown the user's query. Answer the user's query with true or false."
+            "content": ("You are an AI assistant specializing in identifying whether a given query is related to job openings. "
+                        "You will be provided with a conversation history and the user's current query. "
+                        "If the current query is a continuation of the previous conversation, use the historical context to make your decision. "
+                        "Respond with 'True' if the query is related to job openings or 'False' if it is not."
+
             )
         },
+        *[ {"role": "user" if message['isUserMessage'] else "system",
+            "content": message['message'] if message['isUserMessage'] else message['jobRelated']} 
+            for message in history
+        ],
         {
             "role": "user",
-            "content": f"Question: {query}"
+            "content": f"Question: {query}."
         }
     ]
 
@@ -88,23 +95,26 @@ def llm_check_query_related_with_job_search(query):
 
 def generic_chat_completions(query, history):
     history = history[-10:]
-    query_is_job_search = llm_check_query_related_with_job_search(query)
+    query_is_job_search = llm_check_query_related_with_job_search(query, history)
 
     print(query_is_job_search)
 
+    response = ''
     if query_is_job_search == 'True':
         reviews = weaviate_client.collections.get("Job_nov")
         response = reviews.query.near_text(
             query=query,
-            limit=10,
-            # target_vector="title_country",  # Specify the target vector for named vector collections
+            limit=5,
+            target_vector="description",
             return_metadata=MetadataQuery(distance=True)
         )
 
         retrieved_documents = []
-        for o in response.objects:
-            retrieved_documents.append(o.properties['description'])
+        for obj in response.objects:
+            retrieved_documents.append(obj.properties['description'])
 
-        return llm_with_knowledge_base(query, retrieved_documents, history)
+        response = llm_with_knowledge_base(query, retrieved_documents, history)
     else:
-        return llm_with_out_knowledge_base(query, history)
+        response = llm_with_out_knowledge_base(query, history)
+    
+    return query_is_job_search, response

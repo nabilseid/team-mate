@@ -68,14 +68,17 @@ async def handle_chat_message(sid, data):
         }
 
         print(data.get("message"))
-        chat_response  = generic_chat_completions(data.get("message"), history=sessions[session_id])
+        job_related, chat_response  = generic_chat_completions(data.get("message"), history=sessions[session_id])
         print('chat_response', chat_response)
 
+        received_message['jobRelated'] = job_related
+        
         sessions[session_id].append(received_message)
 
         response_message = {
             "id": data.get("id") + "_response",
             "textResponse": chat_response,
+            "jobRelated": job_related,
             "isUserMessage": False,
             "timestamp": data.get("timestamp"),
             "isComplete": True,
