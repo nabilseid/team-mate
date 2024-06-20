@@ -2,6 +2,14 @@
 
 Team-Mate is an independent company dedicated to helping students and trainees manage their time and focus more effectively. This project demonstrates a personalized LLM-enhanced agent designed to optimize schedules, facilitate collaboration, and provide tailored support for enhanced learning experiences.
 
+## Milestone
+
+- [x] Q&A with LLM
+- [x] Chatbot - conversational retrieval 
+- [x] RAG - job openings knowledge base
+- [x] Chain of LLMs - Routes
+- [ ] Tool to fetch vacancies
+
 ## Repository Structure
 
 ```
@@ -25,14 +33,6 @@ Team-Mate is an independent company dedicated to helping students and trainees m
     ├── weaviate_client.py
     └── weaviate_interface.py
 ```
-
-## Milestone
-
-- [x] Q&A with LLM
-- [x] Chatbot
-- [x] RAG with knowledge base about job openings
-- [x] Chain of LLMs to use knowledge base
-- [ ] Extract vacancies from linkedIn
 
 ## Getting Started
 
