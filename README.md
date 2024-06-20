@@ -26,6 +26,14 @@ Team-Mate is an independent company dedicated to helping students and trainees m
     └── weaviate_interface.py
 ```
 
+## Milestone
+
+- [x] Q&A with LLM
+- [x] Chatbot
+- [x] RAG with knowledge base about job openings
+- [x] Chain of LLMs to use knowledge base
+- [ ] Extract vacancies from linkedIn
+
 ## Getting Started
 
 ### Weaviate Setup

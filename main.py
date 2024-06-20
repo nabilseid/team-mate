@@ -2,8 +2,8 @@ import uvicorn
 import socketio
 from fastapi import FastAPI
 from typing import Dict, List
-from weaviate import setup_weaviate_interface
-from weaviate.chat import generic_chat_completions
+from weaviate_app import setup_weaviate_interface
+from weaviate_app.chat import generic_chat_completions
 
 # Fast API application
 app = FastAPI()
@@ -66,11 +66,12 @@ async def handle_chat_message(sid, data):
             "isUserMessage": True,
             "timestamp": data.get("timestamp"),
         }
-        sessions[session_id].append(received_message)
 
         print(data.get("message"))
-        chat_response  = generic_chat_completions(data.get("message"))
+        chat_response  = generic_chat_completions(data.get("message"), history=sessions[session_id])
         print('chat_response', chat_response)
+
+        sessions[session_id].append(received_message)
 
         response_message = {
             "id": data.get("id") + "_response",
