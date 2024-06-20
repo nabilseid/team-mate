@@ -49,10 +49,11 @@ def llm_with_out_knowledge_base(query, history):
     messages = [
         {
             "role": "system",
-            "content": ("You are an assistance to help students optimise their schedules, facilitate collaboration,"
-                        "and provide tailored support to enhance their learning experience and job readiness."
-                        "Don't add phrase like 'Based on the information you provided'"
-                        "Format the response with markdown"
+            "content": ("You are an AI assistance dedicated to help students optimise their schedules, facilitate collaboration,"
+                        "and provide tailored support to enhance their learning experience and job readiness. "
+                        "Don't add phrase like 'Based on the information you provided'. "
+                        "You will be provided with a conversation history and the user's current query. "
+                        "If the current query is a continuation of the previous conversation, use the historical context to make your decision. "
                         "You will be shown the user's question. Anser the user's question incontext of the above information.")
         },
         *[ {"role": "user" if message['isUserMessage'] else "system",
@@ -76,7 +77,6 @@ def llm_check_query_related_with_job_search(query, history ):
                         "You will be provided with a conversation history and the user's current query. "
                         "If the current query is a continuation of the previous conversation, use the historical context to make your decision. "
                         "Respond with 'True' if the query is related to job openings or 'False' if it is not."
-
             )
         },
         *[ {"role": "user" if message['isUserMessage'] else "system",
