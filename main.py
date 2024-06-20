@@ -71,8 +71,6 @@ async def handle_chat_message(sid, data):
         job_related, chat_response  = generic_chat_completions(data.get("message"), history=sessions[session_id])
         print('chat_response', chat_response)
 
-        received_message['jobRelated'] = job_related
-        
         sessions[session_id].append(received_message)
 
         response_message = {
